@@ -49,7 +49,7 @@ Una herramienta de diagnóstico visual automatizada permitiría a agricultores y
 | Prueba        | 15%        | ~293              |
 
 - **Estratificación por clase:** sí, para mantener la proporción de sanas vs. infectadas en cada split.
-- **Justificación:** Con 1,953 imágenes, un split 70/15/15 garantiza suficientes muestras para entrenamiento sin sacrificar la capacidad de evaluación. La estratificación es necesaria dado que las clases colapsadas podrían presentar leve desbalance.
+- **Justificación:** Con 1,953 imágenes, un split 60/20/20 garantiza suficientes muestras para entrenamiento sin sacrificar la capacidad de evaluación. La estratificación es necesaria dado que las clases colapsadas podrían presentar leve desbalance.
 
 ---
 
