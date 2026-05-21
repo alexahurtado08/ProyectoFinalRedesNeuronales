@@ -44,9 +44,9 @@ Una herramienta de diagnóstico visual automatizada permitiría a agricultores y
 
 | Conjunto      | Proporción | # Imágenes aprox. |
 | ------------- | ---------- | ----------------- |
-| Entrenamiento | 70%        | ~1,367            |
-| Validación    | 15%        | ~293              |
-| Prueba        | 15%        | ~293              |
+| Entrenamiento | 60%        | ~1,171            |
+| Validación    | 20%        | ~390              |
+| Prueba        | 20%        | ~390              |
 
 - **Estratificación por clase:** sí, para mantener la proporción de sanas vs. infectadas en cada split.
 - **Justificación:** Con 1,953 imágenes, un split 60/20/20 garantiza suficientes muestras para entrenamiento sin sacrificar la capacidad de evaluación. La estratificación es necesaria dado que las clases colapsadas podrían presentar leve desbalance.
