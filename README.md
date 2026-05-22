@@ -12,17 +12,16 @@
 > transfer learning frente a una CNN entrenada desde cero?
 
 **Objetivo:**
-Comparar el desempeño de tres arquitecturas CNN de complejidad creciente (baseline, 
+Comparar el desempeño de tres arquitecturas CNN de distintas complejidades(baseline, 
 regularización aumentada, transfer learning con ResNet18) para la clasificación binaria 
 de enfermedades en plantas, evaluando la mejora en F1-score y Recall sobre el conjunto 
-de prueba usando el dataset PlantVillage (~54,000 imágenes).
-
+de prueba usando el dataset PlantVillage integrando todos los temas centrales desarollados a lo largo del curso. 
 
 ## Descripción del Proyecto
 
 Este proyecto entrena y compara tres modelos de clasificación de imágenes basados en CNNs para distinguir automáticamente entre hojas de plantas **sanas** y **enfermas**, usando el dataset **PlantVillage** disponible en Kaggle.
 
-PlantVillage contiene ~54,000 imágenes de hojas de plantas con 38 clases originales. En este proyecto colapsamos todas las clases en clasificación **binaria**: `sana` vs `enferma`.
+PlantVillage contiene ~20,638 imágenes de hojas de plantas con 15 clases originales. En este proyecto colapsamos todas las clases en clasificación **binaria**: `sana` vs `enferma`.
 
 | Modelo | Descripción |
 |--------|-------------|
@@ -87,16 +86,16 @@ ProyectoFinalRedesNeuronales/
 
 │
 
-├── proyectofinalredes.ipynb   # Notebook principal (EDA + entrenamiento + evaluación)
+├── proyectofinalredes.ipynb -----------------------------------             # Notebook principal (EDA + entrenamiento + evaluación)
 
-├── requirements.txt           # Dependencias del proyecto
+├── requirements.txt  -----------------------------------                   # Dependencias del proyecto
 
-├── environment.yml            # Entorno conda (alternativa)
+├── environment.yml ----------------------------------                      # Entorno conda (alternativa)
 
-├── README.md                  # Este archivo
+├── README.md  ----------------------------------                           # Este archivo
 
 │
-├── checkpoints/               # Pesos del mejor modelo por cada arquitectura
+├── checkpoints/  ---------------------------------                        # Pesos del mejor modelo por cada arquitectura
 
 │   ├── modelo1_baseline_best.pt
 
@@ -105,7 +104,7 @@ ProyectoFinalRedesNeuronales/
 │   └── modelo3_fase2_best.pt
 
 │
-└── figures/                   # Visualizaciones generadas
+└── figures/   ---------------------------------                          # Visualizaciones generadas
 
 ├── eda_distribucion.png
 
@@ -130,8 +129,8 @@ ProyectoFinalRedesNeuronales/
 
 **Fuente:** [PlantVillage — Kaggle](https://www.kaggle.com/datasets/emmarex/plantdisease)
 
-- **Total de imágenes:** ~54,000
-- **Clases originales:** 38 (combinaciones de especie de planta y enfermedad)
+- **Total de imágenes:** ~20,638
+- **Clases originales:** 15 (combinaciones de especie de planta y enfermedad)
 - **Clases utilizadas (colapso binario):**
   - `sana` ← carpetas que contienen `healthy` en el nombre
   - `enferma` ← todas las demás clases
@@ -139,9 +138,9 @@ ProyectoFinalRedesNeuronales/
 
 | Conjunto      | Proporción | # Imágenes aprox. |
 |---------------|------------|-------------------|
-| Entrenamiento | 60%        | ~32,400           |
-| Validación    | 20%        | ~10,800           |
-| Prueba        | 20%        | ~10,800           |
+| Entrenamiento | 60%        | ~12,383           |
+| Validación    | 20%        | ~4,128            |
+| Prueba        | 20%        | ~4,128            |
 
 Split con estratificación por clase (`stratify=labels`, `random_state=42`).
 
