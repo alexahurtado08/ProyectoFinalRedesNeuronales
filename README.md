@@ -1,85 +1,156 @@
-# Anteproyecto — Redes Neuronales y Aprendizaje Profundo
+# Detección de Enfermedades en Plantas con CNNs
 
 **Curso:** SI3014 — Redes Neuronales y Aprendizaje Profundo  
 **Autoras:** Mariana Valderrama Castañeda · Sara López Marín · Alexandra Hurtado David
 
 ---
 
-## 1. Definición del Problema
+## Descripción del Proyecto
 
-La moniliasis (_Monilia roreri_) es la enfermedad fúngica más devastadora del cacao (_Theobroma cacao_) en América Latina. En Colombia —donde el cacao es un cultivo de alto valor económico y social, especialmente en regiones como Antioquia, Huila y Arauca— esta enfermedad puede ocasionar pérdidas de hasta el 80% de la cosecha si no se detecta a tiempo.
+Este proyecto entrena y compara tres modelos de clasificación de imágenes basados en CNNs para distinguir automáticamente entre hojas de plantas **sanas** y **enfermas**, usando el dataset **PlantVillage** disponible en Kaggle.
 
-El diagnóstico tradicional depende de la inspección visual manual por parte de expertos, lo cual es costoso en mano de obra, lento para cubrir grandes extensiones de cultivo, y subjetivo en etapas tempranas de infección.
+PlantVillage contiene ~54,000 imágenes de hojas de plantas con 38 clases originales. En este proyecto colapsamos todas las clases en clasificación **binaria**: `sana` vs `enferma`.
 
-**Tipo de tarea:** Clasificación binaria de imágenes (sana vs. infectada).
-
-**Objetivo:** Desarrollar un modelo de clasificación de imágenes basado en redes neuronales convolucionales (CNN) capaz de distinguir automáticamente entre mazorcas de cacao **sanas** y mazorcas **infectadas con Monilia roreri**, a partir de fotografías tomadas en campo bajo condiciones reales de iluminación y oclusión.
-
-Una herramienta de diagnóstico visual automatizada permitiría a agricultores y técnicos agrícolas detectar la enfermedad en etapas tempranas, reducir el uso de fungicidas y optimizar las decisiones de cosecha, contribuyendo a la seguridad alimentaria y la sostenibilidad de los cultivos de cacao en Colombia.
-
----
-
-## 2. Dataset
-
-**Dataset principal:** CocoaMoniliaDataSet (Alvarado et al., 2026)  
-**Dataset de soporte:** RipSetCocoaCNCH12 (2023) — usado como referencia para entender la variabilidad visual del fruto.
-
-### Descripción del CocoaMoniliaDataSet
-
-- **Total de imágenes:** 1,953
-- **Clases originales (4):** h0 (sana), m1 (protuberancias), m2 (mancha marrón/oleosa + esporulación), m3 (esporulación avanzada)
-- **Clases utilizadas (2):** Las tres clases de Monilia (m1, m2, m3) se agrupan en una sola etiqueta **"infectada"**, resultando en clasificación binaria:
-  - `0 — sana (h0)`
-  - `1 — infectada (m1 + m2 + m3)`
-
-**Justificación del enfoque binario:** El objetivo es la _detección temprana_ de la enfermedad, no la clasificación de su etapa. Para el agricultor, la decisión relevante es saber si una mazorca está sana o enferma.
-
-| Entrada (X)                                 | Etiqueta (y)           | Modalidad |
-| ------------------------------------------- | ---------------------- | --------- |
-| Imagen RGB de mazorca de cacao (campo real) | 0: sana / 1: infectada | Imágenes  |
+| Modelo | Descripción |
+|--------|-------------|
+| **Modelo 1** | CNN construida desde cero (*baseline*) |
+| **Modelo 2** | Misma CNN + más augmentación y regularización |
+| **Modelo 3** | ResNet18 con Transfer Learning |
 
 ---
 
-## 3. Estrategia de División del Dataset
+## Cómo ejecutar el código
+
+### Opción A — Kaggle (recomendado)
+
+El notebook está optimizado para ejecutarse directamente en Kaggle, donde el dataset PlantVillage ya se encuentra disponible sin necesidad de descarga manual.
+
+1. Ve a [kaggle.com](https://www.kaggle.com) e inicia sesión
+2. Crea un nuevo notebook o sube `proyectofinalredes.ipynb` desde *File → Import Notebook*
+3. En la sección *Add Data*, busca y agrega el dataset `emmarex/plantdisease`
+4. Activa la GPU en *Session options → Accelerator → GPU*
+5. Ejecuta todas las celdas
+
+### Opción B — Local / Google Colab
+
+#### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/alexahurtado08/ProyectoFinalRedesNeuronales.git
+cd ProyectoFinalRedesNeuronales
+```
+
+#### 2. Instalar dependencias
+
+```bash
+pip install -r requirements.txt
+```
+
+O con conda:
+
+```bash
+conda env create -f environment.yml
+conda activate plant-disease
+```
+
+#### 3. Configurar el dataset
+
+1. Ve a [kaggle.com](https://www.kaggle.com) → Account → API → *Create New Token*
+2. Descarga el archivo `kaggle.json`
+3. Súbelo cuando la celda del notebook te lo pida (o colócalo en `~/.kaggle/kaggle.json`)
+
+#### 4. Ejecutar el notebook
+
+```bash
+jupyter notebook proyectofinalredes.ipynb
+```
+
+O súbelo directamente a **Google Colab** y activa la GPU en *Entorno de ejecución → Cambiar tipo de entorno de ejecución → GPU*.
+
+---
+
+## Estructura del Repositorio
+ProyectoFinalRedesNeuronales/
+
+│
+
+├── proyectofinalredes.ipynb   # Notebook principal (EDA + entrenamiento + evaluación)
+
+├── requirements.txt           # Dependencias del proyecto
+
+├── environment.yml            # Entorno conda (alternativa)
+
+├── README.md                  # Este archivo
+
+│
+├── checkpoints/               # Pesos del mejor modelo por cada arquitectura
+
+│   ├── modelo1_baseline_best.pt
+
+│   ├── modelo2_regularizado_best.pt
+
+│   └── modelo3_fase2_best.pt
+
+│
+└── figures/                   # Visualizaciones generadas
+
+├── eda_distribucion.png
+
+├── eda_ejemplos.png
+
+├── eda_pixeles.png
+
+├── Modelo_1_-CNN_Baseline_curvas.png
+
+├── Modelo_2-CNN_Regularizada_curvas.png
+
+├── Modelo_3-_ResNet18_Transfer_Learning_curvas.png
+
+├── comparacion_modelos.png
+
+└── matrices_confusion.png
+
+
+---
+
+## Dataset
+
+**Fuente:** [PlantVillage — Kaggle](https://www.kaggle.com/datasets/emmarex/plantdisease)
+
+- **Total de imágenes:** ~54,000
+- **Clases originales:** 38 (combinaciones de especie de planta y enfermedad)
+- **Clases utilizadas (colapso binario):**
+  - `sana` ← carpetas que contienen `healthy` en el nombre
+  - `enferma` ← todas las demás clases
+- **Modalidad:** Imágenes RGB de hojas de plantas
 
 | Conjunto      | Proporción | # Imágenes aprox. |
-| ------------- | ---------- | ----------------- |
-| Entrenamiento | 60%        | ~1,171            |
-| Validación    | 20%        | ~390              |
-| Prueba        | 20%        | ~390              |
+|---------------|------------|-------------------|
+| Entrenamiento | 60%        | ~32,400           |
+| Validación    | 20%        | ~10,800           |
+| Prueba        | 20%        | ~10,800           |
 
-- **Estratificación por clase:** sí, para mantener la proporción de sanas vs. infectadas en cada split.
-- **Justificación:** Con 1,953 imágenes, un split 60/20/20 garantiza suficientes muestras para entrenamiento sin sacrificar la capacidad de evaluación. La estratificación es necesaria dado que las clases colapsadas podrían presentar leve desbalance.
+Split con estratificación por clase (`stratify=labels`, `random_state=42`).
 
 ---
 
-## 4. Preprocesamiento de Datos
+## Preprocesamiento
 
-**Operaciones comunes (entrenamiento, validación y prueba):**
-
+**Todos los conjuntos:**
 - Redimensionamiento a 224×224 píxeles (RGB)
-- Normalización con media y desviación estándar de ImageNet: `mean=[0.485, 0.456, 0.406]`, `std=[0.229, 0.224, 0.225]`
+- Normalización ImageNet: `mean=[0.485, 0.456, 0.406]`, `std=[0.229, 0.224, 0.225]`
 
-**Augmentación (solo entrenamiento):**
-
-- Rotaciones aleatorias (±30°)
+**Solo entrenamiento (augmentación):**
 - Flip horizontal y vertical aleatorio
-- Variación de brillo y contraste (`ColorJitter`)
+- Rotaciones aleatorias (±30°)
+- `ColorJitter` (brillo 0.3, contraste 0.3, saturación 0.2)
 - `RandomResizedCrop` con escala [0.8, 1.0]
 
-**Justificación:** El dataset es relativamente pequeño (~1,953 imágenes). La augmentación es clave para mejorar la generalización y simular las variaciones naturales de iluminación y posición en campo.
-
 ---
 
-## 5. Arquitecturas Propuestas
-
-Se comparan tres modelos con complejidad creciente, siguiendo las temáticas del curso.
+## Arquitecturas
 
 ### Modelo 1 — CNN Baseline (from scratch)
-
-Sirve como línea de referencia para cuantificar el beneficio de arquitecturas más complejas.
-
-```
 Input: 224×224×3
 │
 ├── Bloque Conv 1: Conv2D(32, 3×3) → BN → ReLU → MaxPool(2×2)
@@ -89,14 +160,9 @@ Input: 224×224×3
 │
 ├── GlobalAveragePooling2D
 ├── Dense(256) → ReLU → Dropout(0.5)
-└── Dense(2) → Softmax    ← {sana, infectada}
-```
+└── Dense(2) → Softmax    ← {sana, enferma}
 
-### Modelo 2 — CNN con Data Augmentation y Regularización
-
-Mismo backbone que el Modelo 1, con augmentación agresiva y mayor regularización. Permite estudiar el efecto de Dropout, Weight Decay y Batch Normalization de forma aislada.
-
-```
+### Modelo 2 — CNN con Regularización Aumentada
 Input: 224×224×3  (con augmentación en entrenamiento)
 │
 ├── Mismos 4 bloques convolucionales
@@ -104,87 +170,67 @@ Input: 224×224×3  (con augmentación en entrenamiento)
 ├── Dense(256) → ReLU → Dropout(0.5)
 ├── Dense(128) → ReLU → Dropout(0.3)
 └── Dense(2) → Softmax
-```
 
 ### Modelo 3 — Transfer Learning con ResNet18
-
-Aprovecha representaciones preentrenadas en ImageNet adaptadas al dominio de mazorcas de cacao. Fase 1: backbone congelado, se entrena solo el clasificador. Fase 2: fine-tuning de las últimas capas.
-
-```
 Pesos preentrenados (ImageNet) — ResNet18
-        ↓
-  Backbone ResNet18 (congelado en fase 1)
-        ↓
-  GlobalAveragePooling
-        ↓
-  Dense(256) → ReLU → Dropout(0.4)
-        ↓
-  Dense(2) → Softmax    ← {sana, infectada}
-
+↓
+Backbone ResNet18 (congelado en fase 1)
+↓
+GlobalAveragePooling
+↓
+Dense(256) → ReLU → Dropout(0.4)
+↓
+Dense(2) → Softmax    ← {sana, enferma}
 Fine-tuning fase 2: se descongela layer4 de ResNet18
-```
-
-**Justificación:** Con ~1,953 imágenes, entrenar una red profunda desde cero es propenso a overfitting. ResNet18 ilustra el concepto de skip connections del curso y es la arquitectura de transfer learning más accesible pedagógicamente.
 
 ---
 
-## 6. Estrategia de Entrenamiento
+## Estrategia de Entrenamiento
 
-| Hiperparámetro | Modelo 1 (Baseline) | Modelo 2 (Aug + Reg) | Modelo 3 (ResNet18 TL)        |
-| -------------- | ------------------- | -------------------- | ----------------------------- |
-| Loss           | CrossEntropyLoss    | CrossEntropyLoss     | CrossEntropyLoss              |
-| Optimizer      | Adam                | Adam                 | Adam                          |
+| Hiperparámetro | Modelo 1 (Baseline) | Modelo 2 (Aug + Reg) | Modelo 3 (ResNet18 TL) |
+|----------------|---------------------|----------------------|------------------------|
+| Loss           | CrossEntropyLoss    | CrossEntropyLoss     | CrossEntropyLoss       |
+| Optimizer      | Adam                | Adam                 | Adam                   |
 | Learning rate  | 1e-3                | 1e-3                 | 1e-4 (fase 1) / 1e-5 (fase 2) |
-| Batch size     | 32                  | 32                   | 32                            |
-| Épocas         | 50                  | 50                   | 20 (fase 1) + 20 (fase 2)     |
-| LR Scheduler   | ReduceLROnPlateau   | ReduceLROnPlateau    | ReduceLROnPlateau             |
-| Dropout        | 0.5                 | 0.5 / 0.3            | 0.4                           |
-| Weight decay   | —                   | 1e-4                 | 1e-4                          |
+| Batch size     | 32                  | 32                   | 32                     |
+| Épocas máx.    | 30 (early stopping) | 30 (early stopping)  | 10 + 10 (early stopping) |
+| LR Scheduler   | ReduceLROnPlateau   | ReduceLROnPlateau    | ReduceLROnPlateau      |
+| Dropout        | 0.5                 | 0.5 / 0.3            | 0.4                    |
+| Weight decay   | —                   | 1e-4                 | 1e-4                   |
 
-**Hardware previsto:** GPU (Google Colab o similar).
+**Hardware:** GPU (Kaggle / Google Colab).  
+**Early stopping:** paciencia de 10 épocas sobre `val_loss`.  
+**Criterio de selección:** mejor F1-score en validación.
 
 ---
 
-## 7. Estrategia de Validación
+## Métricas de Evaluación
 
-| Métrica                  | Justificación                                         |
-| ------------------------ | ----------------------------------------------------- |
+| Métrica                  | Justificación |
+|--------------------------|---------------|
 | F1-score (macro)         | Métrica principal — robusta ante desbalance de clases |
-| Accuracy                 | Referencia general                                    |
-| Recall (clase infectada) | Crítico: minimizar falsos negativos                   |
-| AUC-ROC                  | Evalúa la capacidad discriminativa del modelo         |
-
-- **Early stopping:** paciencia de 10 épocas sobre `val_loss`
-- **Criterio de selección:** mejor F1-score en validación
-- Se guardan checkpoints del mejor modelo en cada época
+| Accuracy                 | Referencia general |
+| Recall (clase enferma)   | Crítico: minimizar falsos negativos (planta enferma clasificada como sana) |
+| AUC-ROC                  | Evalúa la capacidad discriminativa del modelo |
 
 ---
 
-## 8. EDA Inicial
+## Referencias
 
-- Distribución de clases (sana vs. infectada) antes y después del colapso de etiquetas
-- Visualización de ejemplos por clase (al menos 2 imágenes por categoría)
-- Histogramas de distribución de píxeles por canal (R, G, B)
-- Análisis de tamaños originales de imágenes antes del redimensionamiento
-
-> Se incluirán al menos 2 visualizaciones: distribución de clases y ejemplos representativos de imágenes sanas e infectadas.
+1. Hughes, D., Salathé, M. (2015). An open access repository of images on plant health. *arXiv:1511.08060*. https://arxiv.org/abs/1511.08060
+2. He, K., Zhang, X., Ren, S., Sun, J. (2016). Deep Residual Learning for Image Recognition. *CVPR 2016*. https://arxiv.org/abs/1512.03385
+3. Saleem, M.H., Potgieter, J., Arif, K.M. (2019). Plant Disease Detection and Classification by Deep Learning. *Plants, 8*(11), 468. https://doi.org/10.3390/plants8110468
+4. Mohanty, S.P., Hughes, D., Salathé, M. (2016). Using Deep Learning for Image-Based Plant Disease Detection. *Frontiers in Plant Science, 7*, 1419.
 
 ---
 
-## 9. Pregunta de Investigación y Objetivo
+## Declaración de Uso de IA
 
-**Pregunta de investigación:**
+Durante el desarrollo de este proyecto se utilizaron herramientas de inteligencia artificial generativa, específicamente modelos de lenguaje como **Claude (Anthropic)**, como apoyo en las siguientes actividades:
 
-> ¿Puede una red neuronal convolucional entrenada con datos de campo distinguir mazorcas de cacao sanas de infectadas con _Monilia roreri_, y en qué medida mejora el desempeño al incorporar transfer learning frente a una CNN entrenada desde cero?
+- Estructuración y redacción de documentación (README, anteproyecto)
+- Revisión y depuración de código
+- Consultas sobre buenas prácticas en preprocesamiento y arquitecturas CNN
+- Apoyo en la redacción de análisis e interpretación de resultados
 
-**Objetivo:** Comparar el desempeño de tres arquitecturas CNN de complejidad creciente (baseline, regularización aumentada, transfer learning con ResNet18) para la detección binaria de moniliasis en mazorcas de cacao, evaluando la mejora en F1-score y Recall sobre el conjunto de prueba.
-
----
-
-## 10. Referencias
-
-1. Alvarado, J., Restrepo-Arias, J.F., Velásquez, D., Branch-Bedoya, J.W., Maiza, M. (2026). CocoaMoniliaDataSet: A cocoa pod dataset to detect and classify Monilia roreri in real conditions. _Data in Brief, 64_, 112447. https://doi.org/10.1016/j.dib.2025.112447
-2. RipSetCocoaCNCH12 (2023). Labeled Dataset for Ripeness Stage Detection, Semantic and Instance Segmentation of Cocoa Pods. _MDPI Data, 8_(6), 112. https://doi.org/10.3390/data8060112
-3. He, K., Zhang, X., Ren, S., Sun, J. (2016). Deep Residual Learning for Image Recognition. _CVPR 2016_. https://arxiv.org/abs/1512.03385
-4. Saleem, M.H., Potgieter, J., Arif, K.M. (2019). Plant Disease Detection and Classification by Deep Learning. _Plants, 8_(11), 468. https://doi.org/10.3390/plants8110468
-5. Goodfellow, I., Bengio, Y., Courville, A. (2016). _Deep Learning_. MIT Press. https://www.deeplearningbook.org
+Todo el contenido generado con asistencia de IA fue revisado, validado y ajustado por el equipo de trabajo.
