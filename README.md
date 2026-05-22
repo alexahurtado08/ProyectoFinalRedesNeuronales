@@ -4,6 +4,19 @@
 **Autoras:** Mariana Valderrama Castañeda · Sara López Marín · Alexandra Hurtado David
 
 ---
+## Pregunta de Investigación y Objetivo
+
+**Pregunta de investigación:**
+> ¿Puede una red neuronal convolucional entrenada con imágenes de hojas de plantas distinguir
+> entre plantas sanas y enfermas, y en qué medida mejora el desempeño al incorporar
+> transfer learning frente a una CNN entrenada desde cero?
+
+**Objetivo:**
+Comparar el desempeño de tres arquitecturas CNN de complejidad creciente (baseline, 
+regularización aumentada, transfer learning con ResNet18) para la clasificación binaria 
+de enfermedades en plantas, evaluando la mejora en F1-score y Recall sobre el conjunto 
+de prueba usando el dataset PlantVillage (~54,000 imágenes).
+
 
 ## Descripción del Proyecto
 
