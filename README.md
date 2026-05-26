@@ -163,37 +163,68 @@ Split con estratificación por clase (`stratify=labels`, `random_state=42`).
 ## Arquitecturas
 
 ### Modelo 1 — CNN Baseline (from scratch)
+
 Input: 224×224×3
+
+
 │
+
 ├── Bloque Conv 1: Conv2D(32, 3×3) → BN → ReLU → MaxPool(2×2)
+
 ├── Bloque Conv 2: Conv2D(64, 3×3) → BN → ReLU → MaxPool(2×2)
+
 ├── Bloque Conv 3: Conv2D(128, 3×3) → BN → ReLU → MaxPool(2×2)
+
 ├── Bloque Conv 4: Conv2D(256, 3×3) → BN → ReLU → MaxPool(2×2)
+
 │
+
 ├── GlobalAveragePooling2D
+
 ├── Dense(256) → ReLU → Dropout(0.5)
+
 └── Dense(2) → Softmax    ← {sana, enferma}
 
+
 ### Modelo 2 — CNN con Regularización Aumentada
+
 Input: 224×224×3  (con augmentación en entrenamiento)
+
 │
+
 ├── Mismos 4 bloques convolucionales
+
 ├── GlobalAveragePooling2D
+
 ├── Dense(256) → ReLU → Dropout(0.5)
+
 ├── Dense(128) → ReLU → Dropout(0.3)
+
 └── Dense(2) → Softmax
 
+
 ### Modelo 3 — Transfer Learning con ResNet18
+
 Pesos preentrenados (ImageNet) — ResNet18
+
 ↓
+
 Backbone ResNet18 (congelado en fase 1)
+
 ↓
+
 GlobalAveragePooling
+
 ↓
+
 Dense(256) → ReLU → Dropout(0.4)
+
 ↓
+
 Dense(2) → Softmax    ← {sana, enferma}
+
 Fine-tuning fase 2: se descongela layer4 de ResNet18
+
 
 ---
 
